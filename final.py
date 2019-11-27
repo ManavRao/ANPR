@@ -9,14 +9,14 @@
 import cv2 as cv
 import numpy as np
 import os.path
-
+import time
 
 # In[2]:
 
 
 # Initialize the parameters
 
-image_name = "images/test_final.png"
+image_name = "images/test_6.png"
 final_plates = []
 confThreshold = 0.5      #Confidence threshold
 nmsThreshold = 0.4       #Non-maximum suppression threshold
@@ -34,8 +34,8 @@ with open(classesFile, 'rt') as f:
     classes = f.read().rstrip('\n').split('\n')
 
 # Configuration and weight files for the model
-modelConfiguration = "detection/darknet-yolov3.cfg";
-modelWeights = "detection/lapi.weights";
+modelConfiguration = "detection/darknet-yolov3.cfg"
+modelWeights = "detection/lapi.weights"
 
 
 # In[3]:
@@ -186,6 +186,7 @@ while cv.waitKey(1) < 0:
     # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
     t, _ = net.getPerfProfile()
     label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
+    print(label)
     #cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
 
     # Write the frame with the detection boxes
@@ -357,12 +358,16 @@ def new_ocr(img, ans):
 fig=plt.figure(figsize=(8, 8))
 columns = 1
 rows = len(final_plates)
+time_recog = []
 for plate in final_plates:
 
     # Load image
     print(plate.shape)
+    start = time.time()
     ans = pytesseract.image_to_string(plate)    
+    end = time.time()
+    time_recog.append(end-start)
     print("Tesseract Output", ans)
     print("Processed Output", new_ocr(plate, ans))
     print("-------------------------------------------------------------")
-
+print(round(1000*sum(time_recog)/len(time_recog),3))
