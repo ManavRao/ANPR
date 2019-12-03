@@ -16,7 +16,7 @@ import time
 
 # Initialize the parameters
 
-image_name = "images/test_6.png"
+image_name = "images/test_2.png"
 final_plates = []
 confThreshold = 0.5      #Confidence threshold
 nmsThreshold = 0.4       #Non-maximum suppression threshold
